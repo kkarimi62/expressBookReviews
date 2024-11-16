@@ -106,19 +106,25 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  let title = req.params.title;
-
-  let bookArrayByTitle = [];
-  for(let key in books){
-    if(books[ key ].title === title){
-      bookArrayByTitle.push(books[ key ]);
+  const methCall = new Promise((resolve, reject)=>{setTimeout(()=>{
+    try{
+      let title = req.params.title;
+      let bookArrayByTitle = [];
+      for(let key in books){
+        if(books[ key ].title === title){
+          bookArrayByTitle.push(books[ key ]);
+        };
+      };
+      resolve(bookArrayByTitle);
+    } catch(err){
+      reject(err);
     };
-  };
-  
-  return res.status(300).send(JSON.stringify({bookArrayByTitle},null,4));
 
+    methCall.then((bookArrayByTitle)=>{res.status(300).send(JSON.stringify({bookArrayByTitle},null,4))},
+                  (err)=>{res.status(404).json({message: "Unable to send book details based on title!"})});
+  },3000)});
 });
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
